@@ -60,12 +60,20 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: var(--border-radius-lg);
-  padding: 20px 24px;
+  padding: 16px 20px;
   box-shadow: var(--card-shadow);
   display: flex;
   flex-direction: column;
   gap: 16px;
   border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.header-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
 }
 
 .logo-area {
@@ -75,7 +83,7 @@ body {
 }
 
 .logo-icon {
-  font-size: 2rem;
+  font-size: 1.8rem;
   animation: bounce 2s infinite ease-in-out;
 }
 
@@ -85,11 +93,12 @@ body {
 }
 
 .logo-area h1 {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: 900;
   background: linear-gradient(45deg, #ff7675, #6c5ce7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  margin: 0;
 }
 
 /* Date Navigator */
@@ -99,9 +108,11 @@ body {
   justify-content: center;
   gap: 10px;
   background: #f8f9fa;
-  padding: 8px 16px;
+  padding: 6px 12px;
   border-radius: 50px;
   border: 1px solid #e9ecef;
+  margin: 0 auto;
+  max-width: fit-content;
 }
 
 .date-picker-wrapper {
@@ -119,7 +130,7 @@ body {
 }
 
 .date-display {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--text-dark);
   cursor: pointer;
@@ -136,7 +147,8 @@ body {
 .header-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  align-items: center;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
@@ -146,8 +158,8 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 10px 18px;
-  font-size: 0.95rem;
+  padding: 8px 14px;
+  font-size: 0.9rem;
   font-weight: 700;
   border-radius: 50px;
   border: none;
@@ -915,4 +927,20 @@ input[type="text"]:focus, textarea:focus, select:focus {
   font-weight: 700;
   color: var(--primary);
   font-size: 1.1rem;
+}
+
+/* Responsive adjustments for compact header */
+@media (max-width: 768px) {
+  .header-actions .btn-text {
+    display: none;
+  }
+  .header-actions .btn {
+    padding: 8px;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+  }
+  .header-actions .btn-icon {
+    margin: 0;
+  }
 }
