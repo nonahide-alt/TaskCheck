@@ -207,37 +207,25 @@ body {
 }
 
 /* Progress Section */
-.progress-section {
-  background: var(--card-bg);
-  border-radius: var(--border-radius-lg);
-  padding: 20px 24px;
-  box-shadow: var(--card-shadow);
+.progress-section-compact {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.progress-header {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 10px;
+  margin: 0;
 }
 
-.progress-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text-dark);
-}
-
-.progress-percent {
-  font-size: 1.5rem;
+.progress-percent-compact {
+  font-size: 1.2rem;
   font-weight: 900;
   color: var(--primary);
+  white-space: nowrap;
 }
 
 .progress-bar-container {
-  width: 100%;
-  height: 18px;
+  flex: 1;
+  height: 10px;
   background: #e9ecef;
   border-radius: 50px;
   overflow: hidden;
