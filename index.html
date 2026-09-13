@@ -16,28 +16,8 @@
   <div class="app-container">
     <!-- Header -->
     <header class="app-header">
-      <div class="header-top">
-        <div class="logo-area">
-          <span class="logo-icon">⭐</span>
-          <h1>できたよチェック！</h1>
-        </div>
-        
-        <!-- Action Buttons -->
-        <div class="header-actions">
-          <button id="download-data-btn" class="btn btn-secondary" title="記録データをファイルとしてダウンロード">
-            <span class="btn-icon">💾</span> <span class="btn-text">データ保存</span>
-          </button>
-          <button id="import-data-btn" class="btn btn-secondary" title="ファイルからデータを読み込む">
-            <span class="btn-icon">📂</span> <span class="btn-text">データ読込</span>
-          </button>
-          <input type="file" id="import-file-input" accept=".json" style="display:none;">
-          <button id="toggle-calendar-btn" class="btn btn-secondary">
-            <span class="btn-icon">📅</span> <span class="btn-text">カレンダー</span>
-          </button>
-          <button id="open-manage-btn" class="btn btn-primary">
-            <span class="btn-icon">⚙️</span> <span class="btn-text">へんしゅう</span>
-          </button>
-        </div>
+      <div class="logo-area">
+        <span class="logo-icon">⭐</span>
       </div>
       
       <!-- Date Navigator -->
@@ -49,6 +29,16 @@
         </div>
         <button id="next-date-btn" class="icon-btn" title="次の日">▶</button>
         <button id="today-btn" class="btn btn-sub font-bold">きょう</button>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="header-actions">
+        <button id="toggle-calendar-btn" class="btn btn-secondary">
+          <span class="btn-icon">📅</span> <span class="btn-text">カレンダー</span>
+        </button>
+        <button id="open-manage-btn" class="btn btn-secondary">
+          <span class="btn-text">設定</span>
+        </button>
       </div>
     </header>
 
@@ -184,6 +174,17 @@
         <button id="close-manage-modal-btn" class="close-btn">&times;</button>
       </div>
       
+      <!-- Data Management -->
+      <div style="display: flex; gap: 10px; padding: 0 24px 16px;">
+        <button id="download-data-btn" class="btn btn-secondary btn-sub" title="記録データをファイルとしてダウンロード">
+          <span class="btn-icon">💾</span> データ保存
+        </button>
+        <button id="import-data-btn" class="btn btn-secondary btn-sub" title="ファイルからデータを読み込む">
+          <span class="btn-icon">📂</span> データ読込
+        </button>
+        <input type="file" id="import-file-input" accept=".json" style="display:none;">
+      </div>
+
       <div class="manage-tabs">
         <button class="manage-tab-btn active" data-target="manage-items-panel">項目一覧・編集</button>
         <button class="manage-tab-btn" data-target="manage-groups-panel">グループの作成・変更</button>
