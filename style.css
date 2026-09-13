@@ -765,21 +765,13 @@ input[type="text"]:focus, textarea:focus, select:focus {
   }
 
   .app-header {
-    padding: 16px;
+    padding: 0 5px 5px 5px;
+    gap: 10px;
   }
 
-  .header-actions {
-    justify-content: space-between;
-    width: 100%;
-  }
-
-  .header-actions .btn {
-    flex: 1;
-  }
-
-  .date-navigator {
-    width: 100%;
-    justify-content: space-between;
+  .date-display {
+    font-size: 0.9rem;
+    padding: 2px 4px;
   }
 }
 
