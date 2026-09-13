@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>できたよチェック！キッズチェックリスト</title>
+  <meta name="description" content="小学生の日々の持ち物や宿題、習い事をグループ別に楽しく管理できるチェックリストアプリです。">
+  <link rel="stylesheet" href="style.css">
+  <!-- Google Fonts: Zen Maru Gothic for rounded readable typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-area">
+        <span class="logo-icon">⭐</span>
+        <h1>できたよチェック！</h1>
+      </div>
+      
+      <!-- Date Navigator -->
+      <div class="date-navigator">
+        <button id="prev-date-btn" class="icon-btn" title="前の日">◀</button>
+        <div class="date-picker-wrapper">
+          <input type="date" id="date-picker-input">
+          <span id="current-date-display" class="date-display">2026年9月13日 (日)</span>
+        </div>
+        <button id="next-date-btn" class="icon-btn" title="次の日">▶</button>
+        <button id="today-btn" class="btn btn-sub font-bold">きょう</button>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="header-actions">
+        <button id="download-data-btn" class="btn btn-secondary" title="記録データをファイルとしてダウンロード">
+          <span class="btn-icon">💾</span> データ保存
+        </button>
+        <button id="import-data-btn" class="btn btn-secondary" title="ファイルからデータを読み込む">
+          <span class="btn-icon">📂</span> データ読込
+        </button>
+        <input type="file" id="import-file-input" accept=".json" style="display:none;">
+        <button id="toggle-calendar-btn" class="btn btn-secondary">
+          <span class="btn-icon">📅</span> カレンダー
+        </button>
+        <button id="open-manage-btn" class="btn btn-primary">
+          <span class="btn-icon">⚙️</span> チェック項目をへんしゅう
+        </button>
+      </div>
+    </header>
+
+    <!-- Overall Progress Banner -->
+    <section class="progress-section">
+      <div class="progress-header">
+        <span class="progress-title">きょうの達成度</span>
+        <span id="progress-percent" class="progress-percent">0%</span>
+      </div>
+      <div class="progress-bar-container">
+        <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%;"></div>
+      </div>
+      <div id="progress-message" class="progress-message">
+        きょうも元気にスタートしよう！
+      </div>
+    </section>
+
+    <!-- Calendar View (Collapsible / Modal section) -->
+    <section id="calendar-section" class="calendar-section hidden">
+      <div class="section-header">
+        <h2>📅 カレンダーでふりかえり</h2>
+        <button id="close-calendar-btn" class="close-btn">&times;</button>
+      </div>
+      <div class="calendar-controls">
+        <button id="cal-prev-month" class="icon-btn">◀</button>
+        <span id="cal-month-year" class="cal-month-year">2026年 9月</span>
+        <button id="cal-next-month" class="icon-btn">▶</button>
+      </div>
+      <div class="calendar-grid-header">
+        <span class="day-sun">日</span>
+        <span>月</span>
+        <span>火</span>
+        <span>水</span>
+        <span>木</span>
+        <span>金</span>
+        <span class="day-sat">土</span>
+      </div>
+      <div id="calendar-grid" class="calendar-grid">
+        <!-- Calendar days rendered via JS -->
+      </div>
+    </section>
+
+    <!-- Main Checklist View grouped by Group -->
+    <main class="checklist-main">
+      <div class="view-controls">
+        <div class="filter-tabs" id="group-filter-tabs">
+          <button class="tab-btn active" data-group="all">すべて表示</button>
+          <!-- Dynamic group tabs rendered via JS -->
+        </div>
+      </div>
+
+      <div id="groups-container" class="groups-container">
+        <!-- Dynamic Group Cards and Checklist Items rendered via JS -->
+      </div>
+    </main>
+
+    <!-- Canvas for Confetti Fireworks -->
+    <canvas id="confetti-canvas"></canvas>
+  </div>
+
+  <!-- Modal: Item Add/Edit -->
+  <div id="item-modal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="item-modal-title">項目の追加</h3>
+        <button id="close-item-modal-btn" class="close-btn">&times;</button>
+      </div>
+      <form id="item-form">
+        <input type="hidden" id="item-id">
+        <div class="form-group">
+          <label for="item-title">チェック項目名 <span class="required">*</span></label>
+          <input type="text" id="item-title" placeholder="例: 上靴（うわぐつ）" required>
+        </div>
+
+        <div class="form-group">
+          <label for="item-group">グループ <span class="required">*</span></label>
+          <div class="group-select-wrapper">
+            <select id="item-group" required>
+              <!-- Populated via JS -->
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>スケジュールの種類 <span class="required">*</span></label>
+          <div class="schedule-type-options">
+            <label><input type="radio" name="schedule-type" value="weekly" checked> 毎週指定の曜日</label>
+            <label><input type="radio" name="schedule-type" value="specific_date"> 特定の日付</label>
+          </div>
+        </div>
+
+        <div class="form-group" id="weekly-schedule-group">
+          <label>表示する曜日 (毎週の場合) <span class="required">*</span></label>
+          <div class="weekdays-checkboxes">
+            <label><input type="checkbox" name="weekly-day" value="1" checked> 月</label>
+            <label><input type="checkbox" name="weekly-day" value="2" checked> 火</label>
+            <label><input type="checkbox" name="weekly-day" value="3" checked> 水</label>
+            <label><input type="checkbox" name="weekly-day" value="4" checked> 木</label>
+            <label><input type="checkbox" name="weekly-day" value="5" checked> 金</label>
+            <label><input type="checkbox" name="weekly-day" value="6" checked> 土</label>
+            <label class="sunday"><input type="checkbox" name="weekly-day" value="0" checked> 日</label>
+          </div>
+        </div>
+
+        <div class="form-group hidden" id="specific-date-group">
+          <label for="item-specific-date">特定の日付 <span class="required">*</span></label>
+          <input type="date" id="item-specific-date">
+        </div>
+
+        <div class="form-group">
+          <label for="item-duration">おおよその時間 (目安)</label>
+          <input type="text" id="item-duration" placeholder="例: 10分、夕方5時ごろ、朝の出発前">
+        </div>
+
+        <div class="form-group">
+          <label for="item-comment">どうやってやるか（手順・やり方のコツ・メモ）</label>
+          <textarea id="item-comment" rows="3" placeholder="例: 洗った袋にセットしてリュックの横のポケットに入れるよ。"></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="cancel-item-btn" class="btn btn-sub">キャンセル</button>
+          <button type="submit" class="btn btn-primary">保存する</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Check List Manage (Items & Groups List) -->
+  <div id="manage-modal" class="modal hidden">
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <h3>チェック項目の編集・グループ管理</h3>
+        <button id="close-manage-modal-btn" class="close-btn">&times;</button>
+      </div>
+      
+      <div class="manage-tabs">
+        <button class="manage-tab-btn active" data-target="manage-items-panel">項目一覧・編集</button>
+        <button class="manage-tab-btn" data-target="manage-groups-panel">グループの作成・変更</button>
+      </div>
+
+      <!-- Panel 1: Items Management -->
+      <div id="manage-items-panel" class="manage-panel">
+        <div class="panel-actions">
+          <button id="add-new-item-btn" class="btn btn-primary">＋ 新しい項目を追加</button>
+        </div>
+        <div id="manage-items-list" class="manage-list">
+          <!-- Dynamically populated items list -->
+        </div>
+      </div>
+
+      <!-- Panel 2: Groups Management -->
+      <div id="manage-groups-panel" class="manage-panel hidden">
+        <form id="add-group-form" class="inline-form">
+          <input type="hidden" id="edit-group-id" value="">
+          <input type="text" id="new-group-name" placeholder="新しいグループ名（例: お手伝い）" required>
+          <input type="color" id="new-group-color" value="#74b9ff" title="グループの色">
+          <button type="submit" id="add-group-submit-btn" class="btn btn-primary">追加</button>
+          <button type="button" id="cancel-edit-group-btn" class="btn btn-sub hidden">キャンセル</button>
+        </form>
+        <div id="manage-groups-list" class="manage-list">
+          <!-- Dynamically populated groups list -->
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="close-manage-btn-footer" class="btn btn-secondary">とじる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Loading Overlay -->
+  <div id="loading-overlay" class="fullscreen-overlay hidden">
+    <div class="spinner"></div>
+    <p>データを読み込んでいます...</p>
+  </div>
+
+  <!-- Login Overlay -->
+  <div id="login-overlay" class="fullscreen-overlay">
+    <div class="login-card">
+      <h2>できたよチェック！</h2>
+      <p>家族の共有データにアクセスします</p>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="login-id">ログインID</label>
+          <input type="text" id="login-id" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="login-pass">パスワード</label>
+          <input type="password" id="login-pass" required autocomplete="current-password">
+        </div>
+        <div class="login-error hidden" id="login-error-msg">IDまたはパスワードが違います</div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">ログイン</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
