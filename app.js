@@ -282,6 +282,7 @@ function updateDateDisplay() {
 function changeSelectedDate(newDateStr) {
   state.selectedDate = newDateStr;
   updateDateDisplay();
+  renderGroupFilterTabs();
   renderChecklist();
   renderProgress();
   renderCalendar();
@@ -535,9 +536,11 @@ function renderProgress() {
 function renderGroupFilterTabs() {
   elements.groupFilterTabs.innerHTML = '';
 
+  const { total: allTotal, checked: allChecked } = state.getDateProgress(state.selectedDate);
+
   const allBtn = document.createElement('button');
   allBtn.className = `tab-btn ${state.activeGroupFilter === 'all' ? 'active' : ''}`;
-  allBtn.textContent = 'すべて表示';
+  allBtn.textContent = `すべて表示 (${allChecked}/${allTotal})`;
   allBtn.addEventListener('click', () => {
     state.activeGroupFilter = 'all';
     renderGroupFilterTabs();
@@ -546,9 +549,13 @@ function renderGroupFilterTabs() {
   elements.groupFilterTabs.appendChild(allBtn);
 
   state.groups.forEach(group => {
+    const groupItems = state.items.filter(item => item.groupId === group.id && state.isItemActiveOnDate(item, state.selectedDate));
+    const groupTotal = groupItems.length;
+    const groupChecked = groupItems.filter(item => state.isItemChecked(state.selectedDate, item.id)).length;
+
     const btn = document.createElement('button');
     btn.className = `tab-btn ${state.activeGroupFilter === group.id ? 'active' : ''}`;
-    btn.textContent = group.name;
+    btn.textContent = `${group.name} (${groupChecked}/${groupTotal})`;
     btn.addEventListener('click', () => {
       state.activeGroupFilter = group.id;
       renderGroupFilterTabs();
@@ -614,6 +621,7 @@ function renderChecklist() {
         checkbox.innerHTML = '<span class="check-icon">✓</span>';
         checkbox.addEventListener('click', () => {
           const nowChecked = state.toggleCheck(state.selectedDate, item.id);
+          renderGroupFilterTabs();
           renderChecklist();
           renderProgress();
           renderCalendar();
